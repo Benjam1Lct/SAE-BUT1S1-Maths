@@ -147,6 +147,7 @@ def determine_valuations(list_var):
 
     return valuations
 
+'''
 list_var1=[True,None,False,None]
 print(test_determine_valuations('res_test_determine_valuations cas 1 : ',list_var1,[[True, True, False, True], [True, False, False, True], [True, True, False, False], [True, False, False, False]]))
 list_var2=[None,False,True,None,True,False]
@@ -155,14 +156,20 @@ list_var3=[False,True,True,False]
 print(test_determine_valuations('res_test_determine_valuations cas 3 : ',list_var3,[[False, True, True, False]]))
 list_var4=[None,None,None]
 print(test_determine_valuations('res_test_determine_valuations cas 4 : ',list_var4,[[True, True, True], [False, True, True], [True, False, True], [False, False, True], [True, True, False], [False, True, False], [True, False, False], [False, False, False]]))
-
+'''
 
 def resol_sat_force_brute(formule,list_var):
     '''Arguments : une liste de listes d'entiers non nuls traduisant une formule,une liste de booléens informant de valeurs logiques connues (ou None dans le cas contraire) pour un ensemble de variables
     Renvoie : SAT,l1
     avec SAT : booléen indiquant la satisfiabilité de la formule
           l1 : une liste de valuations rendant la formule vraie ou une liste vide
-'''
+    '''
+    valuations = determine_valuations(list_var)
+    for v in valuations:
+        if evaluer_cnf(formule, v):
+            return True, v
+    return False, []
+
 '''
 for1=[[1,2],[2,-3,4],[-1,-2],[-1,-2,-3],[1],[-1,2,3]]
 list_var_for1=[None,None,None,None]
@@ -179,10 +186,7 @@ test('test3 resol_sat_force_brute : ',resol_sat_force_brute(for3,list_var_for3),
 for4=[[-1,-2],[-1,2,-3,4],[2,3,4],[3],[1,-4],[-1,2],[1,2]]
 list_var_for4=[None,None,None,True]
 test('test4 resol_sat_force_brute : ',resol_sat_force_brute(for4,list_var_for4),(False,[]))
-
-
 '''
-
 
 
 def enlever_litt_for(formule,litteral):
@@ -244,8 +248,23 @@ def progress(list_var,list_chgmts):
     Renvoie : l1,l2
     l1 : nouvelle list_var 
     l2 : nouvelle list_chgmts 
-'''
-'''
+    '''
+    # Créez de nouvelles listes pour stocker les nouvelles valeurs
+    l1 = list_var[:]
+    l2 = list_chgmts[:]
+    
+    # Parcourez la liste des variables
+    for i in range(len(l1)):
+        # Si la variable n'a pas encore été affectée (à False), affectez True
+        if l1[i] is None:
+            l1[i] = True
+            # Ajoutez ce changement à la liste des changements
+            l2.append([i, True])
+            return l1, l2
+    # Si aucune variable n'a été affectée, renvoyez les listes inchangées
+    return l1, l2
+
+
 list_var=[True, None, None, None, None]
 list_chgmts=[[0, True]]
 l1=[True, True, None, None, None]
@@ -282,7 +301,7 @@ l1=[True, False, False, True, None]
 l2=[[2, False], [3, True]]
 test("essai cas 6 progress : ",progress(list_var,list_chgmts),(l1,l2))
 
-'''
+
 
 def progress_simpl_for(formule,list_var,list_chgmts):
     '''Arguments : formule,list_var, list_chgmts définies comme précédemment
