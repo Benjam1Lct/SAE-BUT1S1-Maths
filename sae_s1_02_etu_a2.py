@@ -258,7 +258,7 @@ def progress(list_var,list_chgmts):
             return l1, l2
     return l1, l2
 
-
+'''
 list_var=[True, None, None, None, None]
 list_chgmts=[[0, True]]
 l1=[True, True, None, None, None]
@@ -294,7 +294,7 @@ list_chgmts=[[2, False]]
 l1=[True, False, False, True, None]
 l2=[[2, False], [3, True]]
 test("essai cas 6 progress : ",progress(list_var,list_chgmts),(l1,l2))
-
+'''
 
 
 def progress_simpl_for(formule,list_var,list_chgmts):
@@ -366,7 +366,24 @@ def retour(list_var,list_chgmts):
     l2 : la liste actualisée de l'ensemble des changements effectués depuis une formule initiale
     
     '''
-'''
+    l1 = list_var[:]
+    l2 = list_chgmts[:]
+
+    if not l2:
+        return l1, l2
+
+    for change in reversed(l2):
+        variable_index, value = change
+        if value == False:
+            l1[variable_index] = None
+            l2.remove(change)
+        elif value == True:
+            change[1] = False
+            l1[variable_index] = False
+            return l1, l2
+    return l1, l2
+
+"""
 list_var= [True, True, None, None, None]
 list_chgmts= [[0, True], [1, True]]
 l1= [True, False, None, None, None]
@@ -402,7 +419,7 @@ list_chgmts= [[1, False]]
 l1= [True, None, False, True, None]
 l2= []
 test("essai cas 6 retour : ",retour(list_var,list_chgmts),(l1,l2))
-'''
+"""
 
 def retour_simpl_for(formule_init,list_var,list_chgmts):
     '''
@@ -459,11 +476,31 @@ test('essai3_retour_simpl_for_dpll : ',retour_simpl_for_dpll(formule_init,list_v
 
 
 def resol_parcours_arbre(formule_init,list_var,list_chgmts):
-    '''Renvoie : SAT,l1
-    avec SAT : booléen indiquant la satisfiabilité de la formule
-          l1 : une liste de valuations rendant la formule vraie ou une liste vide'''
+    ''' Prend en paramètre : formule_init, list_var, list_chgmts
+            formule_init : une liste de listes d'entiers non nuls traduisant une formule,une liste de booléens informant de valeurs logiques connues (ou None dans le cas contraire) pour un ensemble de variables
+            list_var : une liste de booléens informant de valeurs logiques connues
+            list_chgmts : une liste de listes d'entiers non nuls traduisant une formule,une liste de booléens informant de valeurs logiques connues (ou None dans le cas contraire) pour un ensemble de variables
+        Renvoie : SAT,l1
+            SAT : booléen indiquant la satisfiabilité de la formule
+            l1 : une liste de valuations rendant la formule vraie ou une liste vide
+    '''
+    if not formule_init:
+        return True, list_var
+
+    if not list_var:
+        return False, []
+
+    eval_formule = evaluer_cnf(formule_init, list_var)
+    if eval_formule == True:
+        return True, list_var
+    elif eval_formule == None:
+        list_var, list_chgmts = progress(list_var, list_chgmts)
+        return resol_parcours_arbre(formule_init, list_var, list_chgmts)
+    elif eval_formule == False:
+        list_var, list_chgmts = retour(list_var, list_chgmts)
+        return resol_parcours_arbre(formule_init, list_var, list_chgmts)
     
-'''
+
 formule_init= [[1, 4, -5], [-1, -5], [2, -3, 5], [2, -4], [2, 4, 5], [-1, -2], [-1, 2, -3], [-2, 4, -5], [1, -2]] 
 list_var= [True, True, False, True, None] 
 list_chgmts= [[1, True]]
@@ -481,7 +518,7 @@ list_var= [False, True, False, None, None]
 list_chgmts= [[1, True]]
 cor_resol=(True,[False, True, False, True, False])
 test('essai3_resol_parcours_arbre : ',resol_parcours_arbre(formule_init,list_var,list_chgmts),cor_resol)
-'''   
+   
 
 def resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts):#la même distinction peut être faite entre formule et formule_init
     '''
