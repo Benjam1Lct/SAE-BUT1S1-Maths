@@ -188,7 +188,6 @@ list_var_for4=[None,None,None,True]
 test('test4 resol_sat_force_brute : ',resol_sat_force_brute(for4,list_var_for4),(False,[]))
 '''
 
-
 def enlever_litt_for(formule,litteral):
     '''Arguments :
 formule : comme précédemment
@@ -249,19 +248,14 @@ def progress(list_var,list_chgmts):
     l1 : nouvelle list_var 
     l2 : nouvelle list_chgmts 
     '''
-    # Créez de nouvelles listes pour stocker les nouvelles valeurs
     l1 = list_var[:]
     l2 = list_chgmts[:]
     
-    # Parcourez la liste des variables
     for i in range(len(l1)):
-        # Si la variable n'a pas encore été affectée (à False), affectez True
         if l1[i] is None:
             l1[i] = True
-            # Ajoutez ce changement à la liste des changements
             l2.append([i, True])
             return l1, l2
-    # Si aucune variable n'a été affectée, renvoyez les listes inchangées
     return l1, l2
 
 
