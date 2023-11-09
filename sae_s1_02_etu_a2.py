@@ -194,10 +194,22 @@ formule : comme précédemment
 litteral : un entier non nul traduisant la valeur logique prise par une variable
     Renvoie : la formule simplifiée
 '''
-    
-'''for1=[[1,2,4,-5],[-1,2,3,-4],[-1,-2,-5],[-3,4,5],[-2,3,4,5],[-4]]
+    result = []
+    for clause in formule:
+        if litteral in clause:
+            continue
+        elif -(litteral) in clause:
+            clause.remove(-(litteral))
+            result.append(clause)
+        else:
+            result.append(clause)
+        print(result)
+    return result
+                    
+for1=[[1,2,4,-5],[-1,2,3,-4],[-1,-2,-5],[-3,4,5],[-2,3,4,5],[-4]]
 litt1=4
-test('essai cas 1 enlever_litt_for : ',enlever_litt_for(for1,litt1),[[-1, 2, 3], [-1, -2, -5], []])'''
+test('essai cas 1 enlever_litt_for : ',enlever_litt_for(for1,litt1),[[-1, 2, 3], [-1, -2, -5], []])
+
 
 def init_formule_simpl_for(formule_init,list_var):
     '''
@@ -484,23 +496,21 @@ def resol_parcours_arbre(formule_init,list_var,list_chgmts):
             SAT : booléen indiquant la satisfiabilité de la formule
             l1 : une liste de valuations rendant la formule vraie ou une liste vide
     '''
-    if not formule_init:
+    if evaluer_cnf(formule_init,list_var):
         return True, list_var
-
-    if not list_var:
+    elif list_chgmts == []:
         return False, []
-
-    eval_formule = evaluer_cnf(formule_init, list_var)
-    if eval_formule == True:
-        return True, list_var
-    elif eval_formule == None:
-        list_var, list_chgmts = progress(list_var, list_chgmts)
-        return resol_parcours_arbre(formule_init, list_var, list_chgmts)
-    elif eval_formule == False:
-        list_var, list_chgmts = retour(list_var, list_chgmts)
-        return resol_parcours_arbre(formule_init, list_var, list_chgmts)
+    else:
+        test_list_var, test_list_chgmts = copy.deepcopy(list_var), copy.deepcopy(list_chgmts)
+        test_list_var, test_list_chgmts = progress(test_list_var, test_list_chgmts)
+        if (test_list_var, test_list_chgmts) == (list_var, list_chgmts):
+            list_var, list_chgmts = retour(list_var, list_chgmts)
+            return resol_parcours_arbre(formule_init, list_var, list_chgmts)
+        else:
+            list_var, list_chgmts = progress(test_list_var, test_list_chgmts)
+            return resol_parcours_arbre(formule_init, list_var, list_chgmts)
     
-
+"""
 formule_init= [[1, 4, -5], [-1, -5], [2, -3, 5], [2, -4], [2, 4, 5], [-1, -2], [-1, 2, -3], [-2, 4, -5], [1, -2]] 
 list_var= [True, True, False, True, None] 
 list_chgmts= [[1, True]]
@@ -518,7 +528,8 @@ list_var= [False, True, False, None, None]
 list_chgmts= [[1, True]]
 cor_resol=(True,[False, True, False, True, False])
 test('essai3_resol_parcours_arbre : ',resol_parcours_arbre(formule_init,list_var,list_chgmts),cor_resol)
-   
+"""
+
 
 def resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts):#la même distinction peut être faite entre formule et formule_init
     '''
