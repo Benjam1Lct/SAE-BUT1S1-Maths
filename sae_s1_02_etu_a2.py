@@ -129,7 +129,7 @@ def determine_valuations(list_var):
     valuations = [list(list_var)]  
 
     for i in range(len(list_var)):
-        if list_var[i] is None:
+        if list_var[i] == None:
             new_valuations = [] 
 
             for valuation in valuations:
@@ -147,7 +147,7 @@ def determine_valuations(list_var):
 
     return valuations
 
-'''
+
 list_var1=[True,None,False,None]
 print(test_determine_valuations('res_test_determine_valuations cas 1 : ',list_var1,[[True, True, False, True], [True, False, False, True], [True, True, False, False], [True, False, False, False]]))
 list_var2=[None,False,True,None,True,False]
@@ -156,7 +156,7 @@ list_var3=[False,True,True,False]
 print(test_determine_valuations('res_test_determine_valuations cas 3 : ',list_var3,[[False, True, True, False]]))
 list_var4=[None,None,None]
 print(test_determine_valuations('res_test_determine_valuations cas 4 : ',list_var4,[[True, True, True], [False, True, True], [True, False, True], [False, False, True], [True, True, False], [False, True, False], [True, False, False], [False, False, False]]))
-'''
+
 
 def resol_sat_force_brute(formule,list_var):
     '''Arguments : une liste de listes d'entiers non nuls traduisant une formule,une liste de booléens informant de valeurs logiques connues (ou None dans le cas contraire) pour un ensemble de variables
@@ -276,13 +276,13 @@ def progress(list_var,list_chgmts):
     l2 = list_chgmts[:]
     
     for i in range(len(l1)):
-        if l1[i] is None:
+        if l1[i] == None:
             l1[i] = True
             l2.append([i, True])
             return l1, l2
     return l1, l2
 
-'''
+
 list_var=[True, None, None, None, None]
 list_chgmts=[[0, True]]
 l1=[True, True, None, None, None]
@@ -318,7 +318,6 @@ list_chgmts=[[2, False]]
 l1=[True, False, False, True, None]
 l2=[[2, False], [3, True]]
 test("essai cas 6 progress : ",progress(list_var,list_chgmts),(l1,l2))
-'''
 
 
 def progress_simpl_for(formule,list_var,list_chgmts):
@@ -329,20 +328,19 @@ def progress_simpl_for(formule,list_var,list_chgmts):
     l2 : nouvelle list_chgmts 
     '''
     for i in range(len(list_var)):
-        if list_var[i] is None:
+        if list_var[i] == None:
             list_var[i] = True
             list_chgmts.append([i, True])
             formule = retablir_for(formule, list_chgmts)
             return formule, list_var, list_chgmts
     return formule, list_var, list_chgmts
     
-'''
+
 formule= [[1, 2, 4, -5], [-1, 2, 3, -4], [-1, -2, -5], [-3, 4, 5], [-2, 3, 4, 5], [-4, 5]] 
 list_var= [None, None, None, None, None] 
 list_chgmts= []
 cor_form,cor_l1,cor_l2= ([[2, 3, -4], [-2, -5], [-3, 4, 5], [-2, 3, 4, 5], [-4, 5]],[True, None, None, None, None],[[0, True]])
 test('essai1_progress_simpl_for : ',progress_simpl_for(formule,list_var,list_chgmts),(cor_form,cor_l1,cor_l2))
- 
  
 formule= [[-5], [5]] 
 list_var= [True, True, True, False, None] 
@@ -355,7 +353,7 @@ list_var= [True, False, None, None, None]
 list_chgmts= [[0, True], [1, False]]
 cor_form,cor_l1,cor_l2= ([[4, 5], [-4, 5]],[True, False, True, None, None],[[0, True], [1, False], [2, True]])
 test('essai3_progress_simpl_for : ',progress_simpl_for(formule,list_var,list_chgmts),(cor_form,cor_l1,cor_l2))
-'''   
+
 
 def progress_simpl_for_dpll(formule,list_var,list_chgmts,list_sans_retour):
     '''Arguments : list_sans_retour contient l'ensemble des numéros de variables auxquelles on a affecté une valeur logique sur laquelle on ne reviendra pas
