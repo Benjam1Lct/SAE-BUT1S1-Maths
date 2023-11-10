@@ -241,8 +241,8 @@ test_for('test3_init_formule_simpl_for : ',init_formule_simpl_for(for3,list_var_
 
 def retablir_for(formule_init,list_chgmts):
     '''Arguments : une formule initiale et une liste de changements à apporter sur un ensemble de variables (chaque changement étant une liste [i,bool] avec i l'index qu'occupe la variable dans list_var et bool la valeur logique qui doit lui être assignée) 
-    Renvoie : la formule simplifiée en tenant compte de l'ensemble des changements
-'''
+        Renvoie : la formule simplifiée en tenant compte de l'ensemble des changements
+    '''
     result = copy.deepcopy(formule_init)
     for i in range(len(list_chgmts)):
         if list_chgmts[i][1] == True:
@@ -453,13 +453,36 @@ test("essai cas 6 retour : ",retour(list_var,list_chgmts),(l1,l2))
 
 def retour_simpl_for(formule_init,list_var,list_chgmts):
     '''
-Renvoie : form,l1,l2
+    Renvoie : form,l1,l2
     form : nouvelle formule
     l1 : nouvelle list_var 
     l2 : nouvelle list_chgmts 
-'''
+    '''
+    form = formule_init[:]
+    l1 = list_var[:]
+    l2 = list_chgmts[:]
 
-'''
+    if list_chgmts == []:
+        return form, l1, l2
+
+    for sous_list_chgmts in reversed(l2):
+        variable_index, value = sous_list_chgmts
+        if value == True:
+            sous_list_chgmts[value] = False
+            l1[variable_index] = False
+            form = retablir_for(form, l2)
+            return form, l1, l2
+        elif value == False:
+            sous_list_chgmts[value] = None
+            if l2[(l2.index(sous_list_chgmts)) -1] == True:
+                l2[(l2.index(sous_list_chgmts)) -1][1] = False
+                l1[l2[(l2.index(sous_list_chgmts)) -1][0]] = False
+            elif l2[(l2.index(sous_list_chgmts)) -1] == False:
+                del l2[(l2.index(sous_list_chgmts)) -1]
+                l1[l2[(l2.index(sous_list_chgmts)) -1][0]] = None
+    return form, l1, l2
+             
+
 formule_init= [[-2, 1, -5, -4], [2, 4, -1], [-5, 4], [1, 4, -2], [-4, -2, 5]] 
 list_var= [True, True, False, False, True] 
 list_chgmts= [[0, True], [4, True]]
@@ -471,16 +494,17 @@ list_var= [False, True, True, False, False]
 list_chgmts= [[2, True]]
 cor_form,cor_l1,cor_l2= ([[-2, -5], [-1]],[False, True, False, False, False],[[2, False]])
 test('essai2_retour_simpl_for : ',retour_simpl_for(formule_init,list_var,list_chgmts),(cor_form,cor_l1,cor_l2))
-'''    
+
 
 def retour_simpl_for_dpll(formule_init,list_var,list_chgmts,list_sans_retour):
     '''
-Renvoie : form,l1,l2,l3
-    form : nouvelle formule
-    l1 : nouvelle list_var 
-    l2 : nouvelle list_chgmts
-    l3 : nouvelle list_sans_retour
-'''
+    Renvoie : form,l1,l2,l3
+        form : nouvelle formule
+        l1 : nouvelle list_var 
+        l2 : nouvelle list_chgmts
+        l3 : nouvelle list_sans_retour
+    '''
+
 '''
 formule_init= [[1, 2, 4, -5], [-1, 2, 3, -4], [-1, -2, -5], [-3, 4, 5], [-2, 3, 4, 5], [-4, 5]] 
 list_var= [True, True, False, True, False] 
@@ -565,8 +589,11 @@ def resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts):#l
         form,list_var_init,list_chgmts_init=progress_simpl_for(formule,list_var,[])
         return resol_parcours_arbre_simpl_for(formule_init,form,list_var_init,list_chgmts_init)
     #Reste du parcours à implémenter :
-    
+    else:
+        form=retablir_for(formule,list_var,list_chgmts)
+        return resol_parcours_arbre_simpl_for(formule_init,form,list_var_init,list_chgmts_init)
 
+'''
 formule_init= [[1, 2, 4, -5], [-1, 2, 3, -4], [-1, -2, -5], [-3, 4, 5], [-2, 3, 4, 5], [-4, 5]] 
 formule= [[2, 3, -4], [-2, -5], [-3, 4, 5], [-2, 3, 4, 5], [-4, 5]] 
 list_var= [True, None, None, None, None] 
@@ -587,7 +614,7 @@ list_var= [False, True, False, None, None]
 list_chgmts= [[1, True]]
 cor_resol=(True, [False, True, False, True, False])
 test('essai3_resol_parcours_arbre_simpl_for : ',resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts),cor_resol)
-
+'''
 
 def resol_parcours_arbre_simpl_for_dpll(formule_init,formule,list_var,list_chgmts,list_sans_retour):
     '''
