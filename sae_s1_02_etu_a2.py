@@ -273,15 +273,13 @@ def progress(list_var,list_chgmts):
     l1 : nouvelle list_var 
     l2 : nouvelle list_chgmts 
     '''
-    l1 = list_var[:]
-    l2 = list_chgmts[:]
-    
-    for i in range(len(l1)):
-        if l1[i] == None:
-            l1[i] = True
-            l2.append([i, True])
-            return l1, l2
-    return l1, l2
+
+    for i in range(len(list_var)):
+        if list_var[i] == None:
+            list_var[i] = True
+            list_chgmts.append([i, True])
+            return list_var, list_chgmts
+    return list_var, list_chgmts
 
 '''
 list_var=[True, None, None, None, None]
@@ -328,14 +326,10 @@ def progress_simpl_for(formule,list_var,list_chgmts):
     l1 : nouvelle list_var 
     l2 : nouvelle list_chgmts 
     '''
-    for i in range(len(list_var)):
-        if list_var[i] == None:
-            list_var[i] = True
-            list_chgmts.append([i, True])
-            formule = retablir_for(formule, list_chgmts)
-            return formule, list_var, list_chgmts
+    list_var, list_chgmts = progress(list_var,list_chgmts)
+    formule = retablir_for(formule, list_chgmts)
     return formule, list_var, list_chgmts
-    
+
 '''
 formule= [[1, 2, 4, -5], [-1, 2, 3, -4], [-1, -2, -5], [-3, 4, 5], [-2, 3, 4, 5], [-4, 5]] 
 list_var= [None, None, None, None, None] 
@@ -395,24 +389,22 @@ def retour(list_var,list_chgmts):
     l2 : la liste actualisée de l'ensemble des changements effectués depuis une formule initiale
     
     '''
-    l1 = list_var[:]
-    l2 = list_chgmts[:]
 
-    if not l2:
-        return l1, l2
+    if not list_chgmts:
+        return list_var, list_chgmts
 
-    for change in reversed(l2):
+    for change in reversed(list_chgmts):
         variable_index, value = change
         if value == False:
-            l1[variable_index] = None
-            l2.remove(change)
+            list_var[variable_index] = None
+            list_chgmts.remove(change)
         elif value == True:
             change[1] = False
-            l1[variable_index] = False
-            return l1, l2
-    return l1, l2
+            list_var[variable_index] = False
+            return list_var, list_chgmts
+    return list_var, list_chgmts
 
-"""
+'''
 list_var= [True, True, None, None, None]
 list_chgmts= [[0, True], [1, True]]
 l1= [True, False, None, None, None]
@@ -448,7 +440,7 @@ list_chgmts= [[1, False]]
 l1= [True, None, False, True, None]
 l2= []
 test("essai cas 6 retour : ",retour(list_var,list_chgmts),(l1,l2))
-"""
+'''
 
 def retour_simpl_for(formule_init,list_var,list_chgmts):
     '''
@@ -457,33 +449,10 @@ def retour_simpl_for(formule_init,list_var,list_chgmts):
     l1 : nouvelle list_var 
     l2 : nouvelle list_chgmts 
     '''
-    form = [clause[:] for clause in formule_init]
-    l1 = list_var[:]
-    l2 = list_chgmts[:]
 
-    if not l2:
-        return form, l1, l2
-
-    for sous_list_chgmts in reversed(l2):
-        variable_index, value = sous_list_chgmts
-
-        if value == True:
-            sous_list_chgmts[1] = False
-            l1[variable_index] = False
-            form = retablir_for(form, l2)
-            return form, l1, l2
-
-        elif value == False:
-            sous_list_chgmts[1] = None
-
-            if l2[(l2.index(sous_list_chgmts)) - 1][1] == True:
-                l2[(l2.index(sous_list_chgmts)) - 1][1] = False
-                l1[l2[(l2.index(sous_list_chgmts)) - 1][0]] = False
-
-            elif l2[(l2.index(sous_list_chgmts)) - 1][1] == False:
-                del l2[(l2.index(sous_list_chgmts)) - 1]
-                l1[variable_index] = None
-    return form, l1, l2
+    list_var, list_chgmts = retour(list_var, list_chgmts)
+    form = retablir_for(formule_init, list_chgmts)
+    return form, list_var, list_chgmts
              
 '''
 formule_init= [[-2, 1, -5, -4], [2, 4, -1], [-5, 4], [1, 4, -2], [-4, -2, 5]] 
@@ -601,7 +570,7 @@ def resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts):#l
 
     result, _ = eval_formule_simpl_for(formule_copy, list_var_copy)
 
-
+'''
 formule_init= [[1, 2, 4, -5], [-1, 2, 3, -4], [-1, -2, -5], [-3, 4, 5], [-2, 3, 4, 5], [-4, 5]] 
 formule= [[2, 3, -4], [-2, -5], [-3, 4, 5], [-2, 3, 4, 5], [-4, 5]] 
 list_var= [True, None, None, None, None] 
@@ -622,7 +591,7 @@ list_var= [False, True, False, None, None]
 list_chgmts= [[1, True]]
 cor_resol=(True, [False, True, False, True, False])
 test('essai3_resol_parcours_arbre_simpl_for : ',resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts),cor_resol)
-
+'''
 
 def resol_parcours_arbre_simpl_for_dpll(formule_init,formule,list_var,list_chgmts,list_sans_retour):
     '''
