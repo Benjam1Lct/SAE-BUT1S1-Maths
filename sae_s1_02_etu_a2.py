@@ -551,7 +551,13 @@ def resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts):#l
     SAT=True ou False
     l1=une liste de valuations rendant la formule vraie ou une liste vide
     '''
-
+    '''
+    print('valuation=',list_var)
+    print('changement=',list_chgmts)
+    print('formule=',formule)
+    print('')
+    '''
+    
     #Initialisation du parcours
     if list_chgmts==[]:
         if [] in formule:
@@ -561,16 +567,22 @@ def resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts):#l
         form,list_var_init,list_chgmts_init=progress_simpl_for(formule,list_var,[])
         return resol_parcours_arbre_simpl_for(formule_init,form,list_var_init,list_chgmts_init)
     #Reste du parcours à implémenter :
-    formule_copy = [clause[:] for clause in formule]
-    list_var_copy = list_var[:]
-    list_chgmts_copy = list_chgmts[:]
+    if formule == []:
+        list_chgmts = []
+    if [] in formule:
+        if len(list_chgmts) == 1 and list_chgmts[0][1] == False:
+            return resol_parcours_arbre_simpl_for(formule_init,formule,list_var,[])
+        else:
+            formule,list_var,list_chgmts=retour_simpl_for(formule,list_var,list_chgmts)
+            formule = copy.deepcopy(formule_init)
+            formule = init_formule_simpl_for(formule, list_var)
+    else:
+        formule,list_var,list_chgmts=progress_simpl_for(formule,list_var,list_chgmts)
+    return resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts)
+    
 
-    variable_index, value = list_chgmts_copy.pop()
-    list_var_copy[variable_index] = value
 
-    result, _ = eval_formule_simpl_for(formule_copy, list_var_copy)
 
-'''
 formule_init= [[1, 2, 4, -5], [-1, 2, 3, -4], [-1, -2, -5], [-3, 4, 5], [-2, 3, 4, 5], [-4, 5]] 
 formule= [[2, 3, -4], [-2, -5], [-3, 4, 5], [-2, 3, 4, 5], [-4, 5]] 
 list_var= [True, None, None, None, None] 
@@ -591,7 +603,7 @@ list_var= [False, True, False, None, None]
 list_chgmts= [[1, True]]
 cor_resol=(True, [False, True, False, True, False])
 test('essai3_resol_parcours_arbre_simpl_for : ',resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts),cor_resol)
-'''
+
 
 def resol_parcours_arbre_simpl_for_dpll(formule_init,formule,list_var,list_chgmts,list_sans_retour):
     '''
