@@ -557,12 +557,14 @@ def resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts):#l
     print('formule=',formule)
     print('')
     '''
-    
+
     #Initialisation du parcours
     if list_chgmts==[]:
         if [] in formule:
+            print(False, [])
             return False,[]
         if formule==[]:
+            print(True, list_var)
             return True,list_var
         form,list_var_init,list_chgmts_init=progress_simpl_for(formule,list_var,[])
         return resol_parcours_arbre_simpl_for(formule_init,form,list_var_init,list_chgmts_init)
