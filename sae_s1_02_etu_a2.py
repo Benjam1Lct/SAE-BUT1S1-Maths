@@ -365,8 +365,13 @@ def progress_simpl_for_dpll(formule,list_var,list_chgmts,list_sans_retour):
     l2 : la liste actualisée de l'ensemble des changements effectués
     l3 : la liste éventuellement actualisée des numéros de variables auxquelles une affectation a été attribuée sur laquelle on ne reviendra pas
     '''
+    formule, list_var, list_chgmts = progress_simpl_for(formule, list_var, list_chgmts)
+    for sous_list in formule:
+        if len(sous_list) == 1:
+            list_sans_retour.append(abs(sous_list[0])-1)
+    print(formule, list_var, list_chgmts, list_sans_retour)
+    return formule, list_var, list_chgmts, list_sans_retour
 
-'''
 formule= [[-5], [4, 5], [-4, 5]] 
 list_var= [True, True, False, None, None] 
 list_chgmts= [[0, True], [1, True], [2, False]] 
@@ -387,7 +392,7 @@ list_chgmts= []
 list_sans_retour= []
 cor_for,cor_l1,cor_l2,cor_l3=([[2, 3, -4], [-2, -5], [-3, 4, 5], [-2, 3, 4, 5], [-4, 5]], [True, None, None, None, None], [[0, True]], [])
 test('essai3_progress_simpl_for_dpll : ',progress_simpl_for_dpll(formule,list_var,list_chgmts,list_sans_retour),(cor_for,cor_l1,cor_l2,cor_l3))
-'''  
+
 
 def retour(list_var,list_chgmts):
     '''
@@ -482,7 +487,7 @@ def retour_simpl_for(formule_init,list_var,list_chgmts):
                 l1[l2[(l2.index(sous_list_chgmts)) -1][0]] = None
     return form, l1, l2
              
-
+'''
 formule_init= [[-2, 1, -5, -4], [2, 4, -1], [-5, 4], [1, 4, -2], [-4, -2, 5]] 
 list_var= [True, True, False, False, True] 
 list_chgmts= [[0, True], [4, True]]
@@ -494,7 +499,7 @@ list_var= [False, True, True, False, False]
 list_chgmts= [[2, True]]
 cor_form,cor_l1,cor_l2= ([[-2, -5], [-1]],[False, True, False, False, False],[[2, False]])
 test('essai2_retour_simpl_for : ',retour_simpl_for(formule_init,list_var,list_chgmts),(cor_form,cor_l1,cor_l2))
-
+''' 
 
 def retour_simpl_for_dpll(formule_init,list_var,list_chgmts,list_sans_retour):
     '''
