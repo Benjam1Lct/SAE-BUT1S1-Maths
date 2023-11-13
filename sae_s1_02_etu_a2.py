@@ -1,3 +1,4 @@
+from typing import Counter
 import numpy as np
 import copy
 import time
@@ -358,12 +359,44 @@ def progress_simpl_for_dpll(formule,list_var,list_chgmts,list_sans_retour):
     l2 : la liste actualisée de l'ensemble des changements effectués
     l3 : la liste éventuellement actualisée des numéros de variables auxquelles une affectation a été attribuée sur laquelle on ne reviendra pas
     '''
-    formule, list_var, list_chgmts = progress_simpl_for(formule, list_var, list_chgmts)
-    for sous_list in formule:
-        if len(sous_list) == 1:
-            list_sans_retour.append(abs(sous_list[0])-1)
-    print(formule, list_var, list_chgmts, list_sans_retour)
-    return formule, list_var, list_chgmts, list_sans_retour
+    for clause in formule:
+        if len(clause) == 1:
+            if clause[0] < 0:
+                list_var[abs(clause[0]) - 1] = False
+                list_chgmts.append([abs(clause[0]) - 1, False])
+            else:
+                list_var[abs(clause[0]) - 1] = True
+                list_chgmts.append([abs(clause[0]) - 1, True])
+            list_sans_retour.append(abs(clause[0]) - 1)
+            formule = retablir_for(formule, list_chgmts)
+            return formule, list_var, list_chgmts, list_sans_retour
+    
+    content_formule = []
+    for clause in formule:
+        for value in clause:
+            if value not in content_formule:
+                content_formule.append(value)
+    content_formule = sorted(content_formule)
+
+    for value in content_formule:
+        if -(value) in content_formule:
+            content_formule.remove(value)
+            content_formule.remove(-(value))
+
+    if len(content_formule) > 1:
+        formule, list_var, list_chgmts = progress_simpl_for(formule, list_var, list_chgmts)
+        return formule, list_var, list_chgmts, list_sans_retour
+    else:
+        if content_formule[0] < 0:
+            list_var[abs(content_formule[0]) - 1] = False
+            list_chgmts.append([abs(content_formule[0]) - 1, False])
+        else:
+            list_var[abs(content_formule[0]) - 1] = True
+            list_chgmts.append([abs(content_formule[0]) - 1, True])
+        list_sans_retour.append(abs(content_formule[0]) - 1)
+        formule = retablir_for(formule, list_chgmts)
+        return formule, list_var, list_chgmts, list_sans_retour
+    
 
 formule= [[-5], [4, 5], [-4, 5]] 
 list_var= [True, True, False, None, None] 
@@ -471,11 +504,7 @@ list_var= [False, True, True, False, False]
 list_chgmts= [[2, True]]
 cor_form,cor_l1,cor_l2= ([[-2, -5], [-1]],[False, True, False, False, False],[[2, False]])
 test('essai2_retour_simpl_for : ',retour_simpl_for(formule_init,list_var,list_chgmts),(cor_form,cor_l1,cor_l2))
-<<<<<<< HEAD
 ''' 
-=======
-'''
->>>>>>> 4f9686fc10587bed011c27f3367d9ec8df11a904
 
 def retour_simpl_for_dpll(formule_init,list_var,list_chgmts,list_sans_retour):
     '''
