@@ -53,9 +53,10 @@ def test_for(mess,formu,res_for):
     
 #A VOUS DE JOUER#
 def evaluer_clause(clause,list_var):
-    '''Arguments : une liste d'entiers non nuls traduisant une clause,une liste de booléens informant de valeurs logiques connues (ou None dans le cas contraire) pour un ensemble de variables
+    '''Arguments : une liste d'entiers non nuls traduisant une clause,
+    une liste de booléens informant de valeurs logiques connues (ou None dans le cas contraire) pour un ensemble de variables
     Renvoie : None ou booléen
-'''
+    '''
     if clause == []:
         return False
     else:
@@ -67,9 +68,7 @@ def evaluer_clause(clause,list_var):
                 clause[i] = None
             elif clause[i]<0:
                 clause[i] = not list_var[abs(clause[i])-1]
-            
-
-                
+             
     if True in clause:
         return True
     elif None in clause:
