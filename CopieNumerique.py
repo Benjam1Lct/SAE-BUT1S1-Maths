@@ -410,6 +410,14 @@ l1=une liste de valuations rendant la formule vraie ou une liste vide
     #Reste du parcours à implémenter :
     if formule == []:
         list_chgmts = []
+    test = True
+    for changements in list_chgmts:
+        if changements[1] != False:
+            test = False
+    if test and len(list_chgmts) > 0:
+        if list_chgmts[0][0] == 0:
+            #print('p7',formule, list_var, list_chgmts)
+            return resol_parcours_arbre_simpl_for(formule_init,[[]],list_var,[],list_sans_retour)
     if [] in formule:
         if len(list_chgmts) == 1 and list_chgmts[0][1] == False:
             return resol_parcours_arbre_simpl_for_dpll(formule_init,formule,list_var,[])
@@ -736,6 +744,62 @@ if __name__ == '__main__':
     cor_resol=(True, [False, True, False, True, False])
     test('essai3_resol_parcours_arbre_simpl_for : ',resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts),cor_resol)
     
+    formule_init= [[1, 2, 4, -5], [-1, 2, 3, -4], [-1, -2, -5], [-3, 4, 5], [-2, 3, 4, 5], [-4, 5]] 
+    formule= [[2, 3, -4], [-2, -5], [-3, 4, 5], [-2, 3, 4, 5], [-4, 5]] 
+    list_var= [True, None, None, None, None] 
+    list_chgmts= [[0, True]]
+    cor_resol=(True, [True, False, True, True, True])
+    test('essai1_resol_parcours_arbre_simpl_for : ',resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts),cor_resol)
+
+    formule_init= [[5], [3, -5, -1, -2], [1, -2, -5], [2, -5, 1, -3], [3]] 
+    formule= [[5], [-5]] 
+    list_var= [False, True, True, False, None] 
+    list_chgmts= [[2, True]]
+    cor_resol=(False, [])
+    test('essai2_resol_parcours_arbre_simpl_for : ',resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts),cor_resol)
+
+    formule_init= [[-5, 2, -3, -4], [1, -5], [5, 2], [3, -2, 4], [5, -2, -1]] 
+    formule= [[-5], [4]] 
+    list_var= [False, True, False, None, None] 
+    list_chgmts= [[1, True]]
+    cor_resol=(True, [False, True, False, True, False])
+    test('essai3_resol_parcours_arbre_simpl_for : ',resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts),cor_resol)
+
+    formule_init= [[1, 4, -5], [-1, -5], [2, -3, 5], [2, -4], [2, 4, 5], [-1, -2], [-1, 2, -3], [-2, 4, -5], [1, -2]] 
+    formule= [[-5], []] 
+    list_var= [True, True, False, True, None] 
+    list_chgmts= [[1, True]]
+    cor_resol=(False, [])
+    test('essai4_resol_parcours_arbre_simpl_for : ',resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts),cor_resol)
+
+    formule_init= [[5], [3, -5, -1, -2], [1, -2, -5], [2, -5, 1, -3], [3]] 
+    formule= [[-2],[2,-3],[3]] 
+    list_var= [False, None, None, False, True] 
+    list_chgmts= [[4, True]]
+    cor_resol=(False, [])
+    test('essai5_resol_parcours_arbre_simpl_for : ',resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts),cor_resol)
+
+    formule_init= [[1, 2, 4, -5], [-1, 2, 3, -4], [-1, -2, -5], [-3, 4, 5], [-2, 3, 4, 5], [-4, 5]] 
+    formule= [[2, 3, -4], [-2, -5], [-3, 4, 5], [-2, 3, 4, 5], [-4, 5]] 
+    list_var= [True, None, None, None, None] 
+    list_chgmts= [[0, True]]
+    cor_resol=(True, [True, False, True, True, True])
+    test('essai6_resol_parcours_arbre_simpl_for : ',resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts),cor_resol)
+
+    formule_init= [[5], [3, -5, -1], [1, -5], [3]] 
+    formule= [[5], [-5]] 
+    list_var= [False, True, True, False, None] 
+    list_chgmts= [[0,False],[2, True],[3,False]]
+    cor_resol=(False, [])
+    test('essai7_resol_parcours_arbre_simpl_for : ',resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts),cor_resol)
+
+    formule_init= [[-5, 2, -3, -4], [-5], [5, 2], [3, -2, 4]] 
+    formule= [[-5], [4]] 
+    list_var= [False, True, False, None, None] 
+    list_chgmts= [[1, True],[2,False]]
+    cor_resol=(True, [False, True, False, True, False])
+    test('essai8_resol_parcours_arbre_simpl_for : ',resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts),cor_resol)
+
     
     #TEST resol_parcours_arbre_simpl_for_dpll
     formule_init= [[1, 2, 4, -5], [-1, 2, 3, -4], [-1, -2, -5], [-3, 4, 5], [-2, 3, 4, 5], [-4, 5]] 
