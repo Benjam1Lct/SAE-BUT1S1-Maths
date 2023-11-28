@@ -277,6 +277,8 @@ def retour(list_var,list_chgmts):
         elif change[1] == False:
             list_var[change[0]] = None
             list_chgmts.remove(change)
+            if len(list_chgmts) < 1:
+                return list_var, list_chgmts
     return list_var, list_chgmts
 
     
@@ -355,18 +357,30 @@ def resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts):#l
     #Initialisation du parcours
     if list_chgmts==[]:
         if [] in formule:
-            print(False, [])
+            #print(False, [])
+            #print('p1',formule, list_var, list_chgmts)
             return False,[]
         if formule==[]:
-            print(True, list_var)
+            #print(True, list_var)
+            #print('p2',formule, list_var, list_chgmts)
             return True,list_var
         form,list_var_init,list_chgmts_init=progress_simpl_for(formule,list_var,[])
+        #print('p3',form, list_var_init, list_chgmts_init)
         return resol_parcours_arbre_simpl_for(formule_init,form,list_var_init,list_chgmts_init)
     #Reste du parcours à implémenter :
     if formule == []:
         list_chgmts = []
+    test = True
+    for changements in list_chgmts:
+        if changements[1] != False:
+            test = False
+    if test and len(list_chgmts) > 0:
+        if list_chgmts[0][0] == 0:
+            #print('p7',formule, list_var, list_chgmts)
+            return resol_parcours_arbre_simpl_for(formule_init,[[]],list_var,[])
     if [] in formule:
         if len(list_chgmts) == 1 and list_chgmts[0][1] == False:
+            #print('p4',formule, list_var, list_chgmts)
             return resol_parcours_arbre_simpl_for(formule_init,formule,list_var,[])
         else:
             _,list_var,list_chgmts=retour_simpl_for(formule,list_var,list_chgmts)
@@ -374,6 +388,7 @@ def resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts):#l
             formule = init_formule_simpl_for(formule, list_var)
     else:
         formule,list_var,list_chgmts=progress_simpl_for(formule,list_var,list_chgmts)
+    #print('p5',formule, list_var, list_chgmts)
     return resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts)
 
 
