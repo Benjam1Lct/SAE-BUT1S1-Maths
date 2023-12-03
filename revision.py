@@ -184,6 +184,8 @@ def resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts):#l
             formule = init_formule_simpl_for(formule, list_var)
     else:
         formule,list_var,list_chgmts=progress_simpl_for(formule,list_var,list_chgmts)
+        if formule == []:
+            list_chgmts = []
     return resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts)
 
 '''--------------------------------------------------------------------------------------------------------------------------------'''
@@ -211,11 +213,10 @@ l1=une liste de valuations rendant la formule vraie ou une liste vide
             test = False
     if test and len(list_chgmts) > 0:
         if list_chgmts[0][0] == 0:
+            #print('p7',formule, list_var, list_chgmts)
             return resol_parcours_arbre_simpl_for(formule_init,[[]],list_var,[],list_sans_retour)
     if [] in formule:
-        if len(list_chgmts) == 1 and list_chgmts[0][1] == False:
-            return resol_parcours_arbre_simpl_for_dpll(formule_init,formule,list_var,[])
-        elif len(list_chgmts) == len(list_sans_retour) and [] in formule:
+        if len(list_chgmts) == 1 and list_chgmts[0][1] == False or len(list_chgmts) == len(list_sans_retour):
             return resol_parcours_arbre_simpl_for_dpll(formule_init,formule,list_var,[],list_sans_retour)
         else:   
             formule,list_var,list_chgmts, list_sans_retour = retour_simpl_for_dpll(formule,list_var,list_chgmts, list_sans_retour)
