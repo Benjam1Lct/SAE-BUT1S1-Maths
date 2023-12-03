@@ -388,6 +388,8 @@ def resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts):#l
             formule = init_formule_simpl_for(formule, list_var)
     else:
         formule,list_var,list_chgmts=progress_simpl_for(formule,list_var,list_chgmts)
+        if formule == []:
+            list_chgmts = []
     #print('p5',formule, list_var, list_chgmts)
     return resol_parcours_arbre_simpl_for(formule_init,formule,list_var,list_chgmts)
 
